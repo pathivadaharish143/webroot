@@ -435,8 +435,3 @@ git clone https://github.com/[your github account]/community community
 git clone https://github.com/[your github account]/nisar nisar
 git clone https://github.com/[your github account]/data-pipeline data-pipeline
 ```
-
-## Technical Debug Notes
-
-### Side Navigation Memory Updates
-- **showSideFromHeader stopped acting as a toggle**
