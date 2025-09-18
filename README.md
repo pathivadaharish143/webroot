@@ -34,17 +34,23 @@ Append nopr" or "No PR" if you are not yet ready to send a Pull Request.
 
 Run "pull" hourly to safely pull updates to the modelearth repos residing in your webroot
 
-When making any change, run "push" to send a PR. "push" updates the webroot, submodules and forks.
+When making any change, run "push" to send a PR. 
+"push" updates the webroot, submodules and forks. It does a "pull" automatically first.
 
-	pull
 	push
 
 Addtional options:
 
 	push [folder name]  # Deploy a specific submodule or fork
-	push submodules  # Deploy changes from all submodules changed
+	push submodules  # Deploy changes in submodules only
 	push forks  # Deploy the 4 forks added for the trade flow
 
 
 Or when changing a cloned repo, commit the specific repo using Github Desktop. 
 Then submit a PR through the Github.com website.
+
+**Without use of claude.md**
+
+You can refresh all your local submodule by running:
+
+	git submodule foreach 'git pull origin main || git pull origin master'
