@@ -39,17 +39,23 @@ When making any change, run "push" to send a PR.
 
 	push
 
-Addtional options:
+If you find "push" is asking for mulitple approvals, Claude may not have read the claude.md instructions.
+For the first usage, include extra guidance:
+
+	push using claude.md with git.sh  
+
+Addtional deployment commands:
 
 	push [folder name]  # Deploy a specific submodule or fork
-	push submodules  # Deploy changes in submodules only
-	push forks  # Deploy the 4 forks added for the trade flow
+	push submodules  # Deploy changes in all submodules
+	push forks  # Deploy the extra forks added
 
 
-Or when changing a cloned repo, commit the specific repo using Github Desktop. 
-Then submit a PR through the Github.com website.
+## Alternative to using Claude Code CLI
 
-**Without use of claude.md**
+You can also use Github Desktop to choose a repo inthe webroot using "File > Add Local Repository". 
+Then submit a PR through the Github.com website. (The "push" with Claude will send a PR automatically.)
+
 
 You can refresh all your local submodule by running:
 
