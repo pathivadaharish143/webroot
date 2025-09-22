@@ -18,7 +18,7 @@
 	url = https://github.com/modelearth/comparison
 [submodule "team"]
 	path = team
-	url = https://github.com/DreamStudioCode/team.git
+	url = https://github.com/modelearth/team
 [submodule "realitystream"]
 	path = realitystream
 	url = https://github.com/modelearth/realitystream
@@ -28,3 +28,24 @@
 [submodule "cloud"]
 	path = cloud
 	url = https://github.com/modelearth/cloud
+[submodule "codechat"]
+	path = codechat
+	url = https://github.com/modelearth/codechat
+[submodule "exiobase"]
+	path = exiobase
+	url = https://github.com/modelearth/exiobase
+[submodule "io"]
+	path = io
+	url = https://github.com/modelearth/io
+[submodule "profile"]
+	path = profile
+	url = https://github.com/modelearth/profile
+[submodule "reports"]
+	path = reports
+	url = https://github.com/modelearth/reports
+[submodule "community-forecasting"]
+	path = community-forecasting
+	url = https://github.com/modelearth/community-forecasting
+[submodule "products-data"]
+	path = products-data
+	url = https://github.com/modelearth/products-data
