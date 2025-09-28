@@ -1,3 +1,5 @@
+# HTTP Web Server Front-end
+
 Run the following in your local "webroot" folder using Claude to start an http server on port 8887:
 
 	start server
@@ -16,6 +18,7 @@ Then view pages at:
 [localhost:8887/home](http://localhost:8887/home/)  
 [localhost:8887/feed](http://localhost:8887/feed/)  
 
+<h1>Rust API Backend</h1>
 <div style="margin: 16px 0;">
   <a href="http://localhost:8887/team/admin/sql/panel/" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; background-color: #3B82F6; color: white; text-decoration: none; border-radius: 6px; font-weight: 500; margin-right: 12px;">
     <span>🗄️</span>
