@@ -295,7 +295,7 @@ safe_submodule_update() {
     echo "🛡️ Performing safe submodule update (preserving newer commits)..."
     
     # List of all known submodules
-    local submodules=(cloud comparison feed home localsite products projects realitystream swiper team trade codechat exiobase io profile reports community-forecasting)
+    local submodules=(cloud comparison feed home localsite products projects realitystream swiper team codechat exiobase io profile reports community-forecasting)
     
     for sub in "${submodules[@]}"; do
         if [ -d "$sub" ] && [ -d "$sub/.git" ]; then
@@ -612,7 +612,7 @@ pull_command() {
     
     # Pull submodules
     echo "📥 Pulling submodules..."
-    for sub in cloud comparison feed home localsite products projects realitystream swiper team trade codechat exiobase io profile reports community-forecasting; do
+    for sub in cloud comparison feed home localsite products projects realitystream swiper team codechat exiobase io profile reports community-forecasting; do
         [ ! -d "$sub" ] && continue
         cd "$sub"
         
@@ -638,7 +638,7 @@ pull_command() {
     
     # Pull extra repos
     echo "📥 Pulling extra repos..."
-    for repo in community nisar data-pipeline; do
+    for repo in data-pipeline, trade-data, community, nisar; do
         [ ! -d "$repo" ] && continue
         cd "$repo"
         git pull origin main 2>/dev/null || echo "⚠️ Checking for conflicts in $repo"
@@ -676,7 +676,7 @@ pull_specific_repo() {
     fi
     
     # Check if it's a submodule
-    if [[ " cloud comparison feed home localsite products projects realitystream swiper team trade codechat exiobase io profile reports community-forecasting " =~ " $repo_name " ]]; then
+    if [[ " cloud comparison feed home localsite products projects realitystream swiper team codechat exiobase io profile reports community-forecasting " =~ " $repo_name " ]]; then
         if [ -d "$repo_name" ]; then
             echo "📥 Pulling submodule: $repo_name..."
             cd "$repo_name"
@@ -701,7 +701,7 @@ pull_specific_repo() {
     fi
     
     # Check if it's an extra repo
-    if [[ " community nisar data-pipeline " =~ " $repo_name " ]]; then
+    if [[ " data-pipeline trade-data community nisar " =~ " $repo_name " ]]; then
         if [ -d "$repo_name" ]; then
             echo "📥 Pulling extra repo: $repo_name..."
             cd "$repo_name"
@@ -723,8 +723,8 @@ pull_specific_repo() {
     echo "⚠️ Repository not recognized: $repo_name"
     echo "Supported repositories:"
     echo "  Webroot: webroot"
-    echo "  Submodules: cloud, comparison, feed, home, localsite, products, projects, realitystream, swiper, team, trade, codechat, exiobase, io, profile, reports, community-forecasting"
-    echo "  Extra Repos: community, nisar, data-pipeline"
+    echo "  Submodules: cloud, comparison, feed, home, localsite, products, projects, realitystream, swiper, team, codechat, exiobase, io, profile, reports, community-forecasting"
+    echo "  Extra Repos: data-pipeline, trade-data, community, nisar"
 }
 
 # Check and fix detached HEAD states in all repositories
@@ -743,7 +743,7 @@ fix_all_detached_heads() {
     
     # Check all submodules
     echo "📁 Checking submodules..."
-    for sub in cloud comparison feed home localsite products projects realitystream swiper team trade codechat exiobase io profile reports community-forecasting; do
+    for sub in cloud comparison feed home localsite products projects realitystream swiper team codechat exiobase io profile reports community-forecasting; do
         if [ -d "$sub" ]; then
             echo "📁 Checking $sub..."
             cd "$sub"
@@ -756,7 +756,7 @@ fix_all_detached_heads() {
     
     # Check extra repos
     echo "📁 Checking extra repos..."
-    for repo in community nisar data-pipeline; do
+    for repo in data-pipeline trade-data community nisar; do
         if [ -d "$repo" ]; then
             echo "📁 Checking $repo..."
             cd "$repo"
@@ -797,7 +797,7 @@ update_all_remotes_for_user() {
     
     # Check all submodules
     echo "📁 Checking submodule remotes..."
-    for sub in cloud comparison feed home localsite products projects realitystream swiper team trade codechat exiobase io profile reports community-forecasting; do
+    for sub in cloud comparison feed home localsite products projects realitystream swiper team codechat exiobase io profile reports community-forecasting; do
         if [ -d "$sub" ]; then
             echo "📁 Checking $sub remotes..."
             cd "$sub"
@@ -810,7 +810,7 @@ update_all_remotes_for_user() {
     
     # Check extra repos
     echo "📁 Checking extra repo remotes..."
-    for repo in community nisar data-pipeline; do
+    for repo in data-pipeline trade-data community nisar; do
         if [ -d "$repo" ]; then
             echo "📁 Checking $repo remotes..."
             cd "$repo"
@@ -1030,7 +1030,7 @@ push_specific_repo() {
     fi
     
     # Check if it's a submodule
-    if [[ " cloud comparison feed home localsite products projects realitystream swiper team trade codechat exiobase io profile reports community-forecasting " =~ " $name " ]]; then
+    if [[ " cloud comparison feed home localsite products projects realitystream swiper team codechat exiobase io profile reports community-forecasting " =~ " $name " ]]; then
         if [ -d "$name" ]; then
             cd "$name"
             commit_push "$name" "$skip_pr"
@@ -1067,7 +1067,7 @@ push_specific_repo() {
     fi
     
     # Check if it's an extra repo
-    if [[ " community nisar data-pipeline " =~ " $name " ]]; then
+    if [[ " data-pipeline trade-data community nisar " =~ " $name " ]]; then
         if [ -d "$name" ]; then
             cd "$name"
             commit_push "$name" "$skip_pr"
@@ -1084,8 +1084,8 @@ push_specific_repo() {
     echo "⚠️ Repository not recognized: $name"
     echo "Supported repositories:"
     echo "  Webroot: webroot"
-    echo "  Submodules: cloud, comparison, feed, home, localsite, products, projects, realitystream, swiper, team, trade, codechat, exiobase, io, profile, reports, community-forecasting"
-    echo "  Extra Repos: community, nisar, data-pipeline"
+    echo "  Submodules: cloud, comparison, feed, home, localsite, products, projects, realitystream, swiper, team, codechat, exiobase, io, profile, reports, community-forecasting"
+    echo "  Extra Repos: data-pipeline, trade-data, community, nisar"
 }
 
 # Push all submodules
@@ -1103,7 +1103,7 @@ push_submodules() {
     fi
     
     # Push each submodule with changes
-    for sub in cloud comparison feed home localsite products projects realitystream swiper team trade codechat exiobase io profile reports community-forecasting; do
+    for sub in cloud comparison feed home localsite products projects realitystream swiper team codechat exiobase io profile reports community-forecasting; do
         [ ! -d "$sub" ] && continue
         cd "$sub"
         commit_push "$sub" "$skip_pr"
@@ -1151,7 +1151,7 @@ push_all() {
     push_submodules "$skip_pr"
     
     # Push extra repos
-    for repo in community nisar data-pipeline; do
+    for repo in data-pipeline trade-data community nisar; do
         [ ! -d "$repo" ] && continue
         cd "$repo"
         commit_push "$repo" "$skip_pr"
@@ -1173,7 +1173,7 @@ check_extra_repos_for_changes() {
     cd $(git rev-parse --show-toplevel)
     
     local repos_with_changes=()
-    local repo_names=("community" "nisar" "data-pipeline")
+    local repo_names=("data-pipeline" "trade-data" "community" "nisar")
     
     # Check each extra repo for changes
     for repo in "${repo_names[@]}"; do
@@ -1272,7 +1272,7 @@ final_push_completion_check() {
     fi
     
     # Check all submodules
-    for sub in cloud comparison feed home localsite products projects realitystream swiper team trade codechat exiobase io profile reports community-forecasting; do
+    for sub in cloud comparison feed home localsite products projects realitystream swiper team codechat exiobase io profile reports community-forecasting; do
         if [ -d "$sub" ]; then
             cd "$sub"
             if [ -n "$(git rev-list --count @{u}..HEAD 2>/dev/null)" ] && [ "$(git rev-list --count @{u}..HEAD 2>/dev/null)" != "0" ]; then
@@ -1284,7 +1284,7 @@ final_push_completion_check() {
     done
     
     # Check extra repos
-    for repo in community nisar data-pipeline; do
+    for repo in data-pipeline trade-data community nisar; do
         if [ -d "$repo" ]; then
             cd "$repo"
             if [ -n "$(git rev-list --count @{u}..HEAD 2>/dev/null)" ] && [ "$(git rev-list --count @{u}..HEAD 2>/dev/null)" != "0" ]; then
@@ -1357,8 +1357,8 @@ case "$1" in
         echo ""
         echo "Supported Repository Names:"
         echo "  Webroot: webroot"
-        echo "  Submodules: cloud, comparison, feed, home, localsite, products, projects, realitystream, swiper, team, trade, codechat, exiobase, io, profile, reports, community-forecasting"
-        echo "  Extra Repos: community, nisar, data-pipeline"
+        echo "  Submodules: cloud, comparison, feed, home, localsite, products, projects, realitystream, swiper, team, codechat, exiobase, io, profile, reports, community-forecasting"
+        echo "  Extra Repos: data-pipeline, trade-data, community, nisar"
         echo ""
         echo "Options:"
         echo "  nopr                               - Skip PR creation on push failures"

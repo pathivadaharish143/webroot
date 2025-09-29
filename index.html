@@ -67,7 +67,9 @@ loadMarkdown("README.md", "readmeDiv", "_parent", 1, function() {
         setupWebrootSetup('webrootSetup');
         setupGitAccountFields('textInPage');
         setupTradeFlowRepos('tradeFlowRepos');
-        
+        setupBackendInfo('backendInfo');
+        // Load deploy.md into deployDiv
+        loadMarkdown("deploy.md", "deployDiv", "_parent", 1);
         // Update fork repos commands after README loads and fields are setup
         setTimeout(() => {
             updateForkReposCommands();
@@ -140,6 +142,9 @@ loadMarkdown("README.md", "readmeDiv", "_parent", 1, function() {
     </div>
     <div id="commonSetupDiv"></div>
     <div id="readmeDiv" class="card"></div>
+    <div class="card" id="tradeFlowRepos"></div>
+    <div class="card" id="backendInfo"></div>
+    <div class="card" id="deployDiv"></div>
 </div>
 </body>
 </html>
