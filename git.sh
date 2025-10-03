@@ -302,11 +302,56 @@ safe_submodule_update() {
             echo "🔍 Checking submodule: $sub"
             cd "$sub"
             
+            # Always fetch latest from parent repository first
+            echo "📥 Fetching latest from parent repository for $sub..."
+            git fetch origin main 2>/dev/null || git fetch origin master 2>/dev/null || echo "⚠️ Could not fetch from origin"
+            
+            # Also try to fetch from upstream if it exists
+            if git remote | grep -q upstream; then
+                git fetch upstream main 2>/dev/null || git fetch upstream master 2>/dev/null || echo "⚠️ Could not fetch from upstream"
+            fi
+            
             # Get current commit hash and timestamp
             local current_commit=$(git rev-parse HEAD 2>/dev/null || echo "")
             local current_timestamp=""
             if [ -n "$current_commit" ]; then
                 current_timestamp=$(git show -s --format=%ct "$current_commit" 2>/dev/null || echo "0")
+            fi
+            
+            # Get latest commit from origin/main (or master)
+            local latest_origin_commit=$(git rev-parse origin/main 2>/dev/null || git rev-parse origin/master 2>/dev/null || echo "")
+            local latest_origin_timestamp=""
+            if [ -n "$latest_origin_commit" ]; then
+                latest_origin_timestamp=$(git show -s --format=%ct "$latest_origin_commit" 2>/dev/null || echo "0")
+            fi
+            
+            # Get latest commit from upstream if available
+            local latest_upstream_commit=""
+            local latest_upstream_timestamp=""
+            if git remote | grep -q upstream; then
+                latest_upstream_commit=$(git rev-parse upstream/main 2>/dev/null || git rev-parse upstream/master 2>/dev/null || echo "")
+                if [ -n "$latest_upstream_commit" ]; then
+                    latest_upstream_timestamp=$(git show -s --format=%ct "$latest_upstream_commit" 2>/dev/null || echo "0")
+                fi
+            fi
+            
+            # Determine the newest available commit
+            local newest_commit="$current_commit"
+            local newest_timestamp="$current_timestamp"
+            local update_source="current"
+            
+            # Check if origin has newer commits
+            if [ -n "$latest_origin_commit" ] && [ "$latest_origin_timestamp" -gt "$newest_timestamp" ]; then
+                newest_commit="$latest_origin_commit"
+                newest_timestamp="$latest_origin_timestamp"
+                update_source="origin"
+            fi
+            
+            # Check if upstream has even newer commits
+            if [ -n "$latest_upstream_commit" ] && [ "$latest_upstream_timestamp" -gt "$newest_timestamp" ]; then
+                newest_commit="$latest_upstream_commit"
+                newest_timestamp="$latest_upstream_timestamp"
+                update_source="upstream"
             fi
             
             # Check what commit the parent repository wants
@@ -318,9 +363,17 @@ safe_submodule_update() {
                 # Get timestamp of expected commit
                 local expected_timestamp=$(git show -s --format=%ct "$expected_commit" 2>/dev/null || echo "0")
                 
-                # Only update if expected commit is newer than current commit
-                if [ "$expected_timestamp" -gt "$current_timestamp" ]; then
-                    echo "⬆️ Updating $sub to newer commit: $expected_commit ($(git show -s --format='%ci' "$expected_commit" 2>/dev/null || echo 'unknown date'))"
+                # Update to the newest available commit if it's newer than current
+                if [ "$newest_timestamp" -gt "$current_timestamp" ] && [ "$newest_commit" != "$current_commit" ]; then
+                    echo "⬆️ Updating $sub to newer commit from $update_source: $newest_commit ($(git show -s --format='%ci' "$newest_commit" 2>/dev/null || echo 'unknown date'))"
+                    git checkout "$newest_commit" 2>/dev/null || echo "⚠️ Failed to checkout $newest_commit in $sub"
+                    
+                    # Update parent repo to point to the newest commit
+                    cd ..
+                    git add "$sub"
+                    echo "📌 Updated parent repo to use newer $sub commit from $update_source"
+                elif [ "$expected_timestamp" -gt "$current_timestamp" ]; then
+                    echo "⬆️ Updating $sub to parent's expected commit: $expected_commit ($(git show -s --format='%ci' "$expected_commit" 2>/dev/null || echo 'unknown date'))"
                     git checkout "$expected_commit" 2>/dev/null || echo "⚠️ Failed to checkout $expected_commit in $sub"
                 elif [ "$expected_timestamp" -lt "$current_timestamp" ]; then
                     echo "🛡️ Preserving newer commit in $sub: $current_commit ($(git show -s --format='%ci' "$current_commit" 2>/dev/null || echo 'unknown date'))"
@@ -352,6 +405,15 @@ safe_single_submodule_update() {
     if [ -d "$sub" ] && [ -d "$sub/.git" ]; then
         cd "$sub"
         
+        # Always fetch latest from parent repository first
+        echo "📥 Fetching latest from parent repository for $sub..."
+        git fetch origin main 2>/dev/null || git fetch origin master 2>/dev/null || echo "⚠️ Could not fetch from origin"
+        
+        # Also try to fetch from upstream if it exists
+        if git remote | grep -q upstream; then
+            git fetch upstream main 2>/dev/null || git fetch upstream master 2>/dev/null || echo "⚠️ Could not fetch from upstream"
+        fi
+        
         # Get current commit hash and timestamp
         local current_commit=$(git rev-parse HEAD 2>/dev/null || echo "")
         local current_timestamp=""
@@ -359,20 +421,48 @@ safe_single_submodule_update() {
             current_timestamp=$(git show -s --format=%ct "$current_commit" 2>/dev/null || echo "0")
         fi
         
-        # Update to latest from remote main branch (safer than parent repo reference)
-        git fetch origin main 2>/dev/null || git fetch origin master 2>/dev/null
-        local latest_commit=$(git rev-parse origin/main 2>/dev/null || git rev-parse origin/master 2>/dev/null || echo "")
+        # Get latest commit from origin/main (or master)
+        local latest_origin_commit=$(git rev-parse origin/main 2>/dev/null || git rev-parse origin/master 2>/dev/null || echo "")
+        local latest_origin_timestamp=""
+        if [ -n "$latest_origin_commit" ]; then
+            latest_origin_timestamp=$(git show -s --format=%ct "$latest_origin_commit" 2>/dev/null || echo "0")
+        fi
         
-        if [ -n "$latest_commit" ] && [ -n "$current_commit" ]; then
-            local latest_timestamp=$(git show -s --format=%ct "$latest_commit" 2>/dev/null || echo "0")
-            
-            # Only update if remote has newer commits
-            if [ "$latest_timestamp" -gt "$current_timestamp" ]; then
-                echo "⬆️ Updating $sub to latest: $latest_commit"
-                git checkout "$latest_commit" 2>/dev/null || echo "⚠️ Failed to checkout latest in $sub"
-            else
-                echo "✅ $sub is already up to date"
+        # Get latest commit from upstream if available
+        local latest_upstream_commit=""
+        local latest_upstream_timestamp=""
+        if git remote | grep -q upstream; then
+            latest_upstream_commit=$(git rev-parse upstream/main 2>/dev/null || git rev-parse upstream/master 2>/dev/null || echo "")
+            if [ -n "$latest_upstream_commit" ]; then
+                latest_upstream_timestamp=$(git show -s --format=%ct "$latest_upstream_commit" 2>/dev/null || echo "0")
             fi
+        fi
+        
+        # Determine the newest available commit
+        local newest_commit="$current_commit"
+        local newest_timestamp="$current_timestamp"
+        local update_source="current"
+        
+        # Check if origin has newer commits
+        if [ -n "$latest_origin_commit" ] && [ "$latest_origin_timestamp" -gt "$newest_timestamp" ]; then
+            newest_commit="$latest_origin_commit"
+            newest_timestamp="$latest_origin_timestamp"
+            update_source="origin"
+        fi
+        
+        # Check if upstream has even newer commits
+        if [ -n "$latest_upstream_commit" ] && [ "$latest_upstream_timestamp" -gt "$newest_timestamp" ]; then
+            newest_commit="$latest_upstream_commit"
+            newest_timestamp="$latest_upstream_timestamp"
+            update_source="upstream"
+        fi
+        
+        # Update to the newest available commit if it's newer than current
+        if [ "$newest_timestamp" -gt "$current_timestamp" ] && [ "$newest_commit" != "$current_commit" ]; then
+            echo "⬆️ Updating $sub to newer commit from $update_source: $newest_commit ($(git show -s --format='%ci' "$newest_commit" 2>/dev/null || echo 'unknown date'))"
+            git checkout "$newest_commit" 2>/dev/null || echo "⚠️ Failed to checkout $newest_commit in $sub"
+        else
+            echo "✅ $sub is already up to date"
         fi
         cd ..
     else
