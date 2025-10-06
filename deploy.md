@@ -11,6 +11,8 @@ Start a secure virtual session in your local webroot.
 
 	python3 -m venv env
 	source env/bin/activate
+	chmod +x git.sh
+	chmod +x team/git.sh
 
 Navigate to the team directory and run git.sh commands. Your "push" with git.sh will automatically run a "pull" first.  
 You can watch the webroot in Github Desktop to see if updates are deployed.
