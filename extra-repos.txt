@@ -1,0 +1,9 @@
+# Extra Repositories for ModelEarth Webroot
+# These are optional repositories that provide specialized functionality
+# Format: repo_name|github_url
+# Lines starting with # are comments
+
+community|https://github.com/modelearth/community
+nisar|https://github.com/modelearth/nisar
+data-pipeline|https://github.com/modelearth/data-pipeline
+trade-data|https://github.com/modelearth/trade-data
