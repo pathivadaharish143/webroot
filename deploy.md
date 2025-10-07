@@ -34,16 +34,23 @@ You can watch the webroot in Github Desktop to see if updates are deployed.
 	./git.sh fix                    # Fix detached HEAD states
 	./git.sh remotes                # Update remotes for current GitHub user
 
-### Options:
+### Wait to submit Pull Request:
 - Add `nopr` to skip PR creation: `./git.sh push nopr`
+
+<!-- 
+Advanced option (not recommended for typical use):
 - Add `overwrite-local` to let parent repository override your local commits: `./git.sh pull overwrite-local`
 
-**⚠️ WARNING**: `overwrite-local` will delete uncommitted local work in submodules. To recover deleted work, you can use git's reflog in each affected submodule:
+WARNING: `overwrite-local` will delete local work in submodules:
+- Uncommitted changes: Permanently lost, no recovery possible
+- Committed but unpushed changes: Can be recovered using git's reflog
 
+To recover previously committed work that was overwritten locally:
 	cd [submodule_name]
 	git reflog                    # Find your lost commit hash
 	git checkout [commit_hash]    # Restore your work
 	git checkout -b recovery      # Create new branch to save it
+-->
 
 ### Supported repositories:
 - **Webroot**: webroot
