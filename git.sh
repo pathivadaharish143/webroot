@@ -3,6 +3,9 @@
 # Simple passthrough script to team/git.sh
 # Usage: ./git.sh [any arguments]
 
+# Ensure we're in the webroot directory
+cd "$(dirname "$0")"
+
 # Check if team/git.sh exists
 if [ ! -f "team/git.sh" ]; then
     echo "⚠️ ERROR: team/git.sh not found"
@@ -10,5 +13,6 @@ if [ ! -f "team/git.sh" ]; then
     exit 1
 fi
 
-# Pass through all arguments to team/git.sh
-exec ./team/git.sh "$@"
+# Change to team directory and run git.sh from there
+cd team
+exec ./git.sh "$@"
