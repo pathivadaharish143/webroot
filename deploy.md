@@ -1,11 +1,11 @@
 # How to deploy changes
 
-Update and make commits often (at least hourly).
+Update and make commits often. (At least hourly if you are editing code.)
 Append "nopr" or "No PR" if you are not yet ready to send a Pull Request.
 
 ## Using git.sh (Recommended)
 
-For more reliable deployment, use git.sh directly from a separate terminal window independent from Claude Code CLI.
+Run your git.sh commands from a separate terminal. (Otherwise Code CLIs tend to use their own "push" interpretations.)
 
 Start a secure virtual session in your local webroot.
 
@@ -36,7 +36,14 @@ You can watch the webroot in Github Desktop to see if updates are deployed.
 
 ### Options:
 - Add `nopr` to skip PR creation: `./git.sh push nopr`
-- Use `--unsafe-submodules` to disable safe submodule protection (not recommended)
+- Add `overwrite-local` to let parent repository override your local commits: `./git.sh pull overwrite-local`
+
+**⚠️ WARNING**: `overwrite-local` will delete uncommitted local work in submodules. To recover deleted work, you can use git's reflog in each affected submodule:
+
+	cd [submodule_name]
+	git reflog                    # Find your lost commit hash
+	git checkout [commit_hash]    # Restore your work
+	git checkout -b recovery      # Create new branch to save it
 
 ### Supported repositories:
 - **Webroot**: webroot
@@ -46,31 +53,38 @@ You can watch the webroot in Github Desktop to see if updates are deployed.
 ## Using Github Desktop
 
 You can also use Github Desktop to choose a repo in the webroot using "File > Add Local Repository". 
-Then submit a PR through the Github.com website. (The "push" with Claude will send a PR automatically.)
+Then submit a PR through the Github.com website. (The "push" with Claude or git.sh will send a PR automatically.)
 
-IMPORTANT: If you're using Github Desktop instead of git.sh, you'll probably still need to send a PR in Github.com.
+IMPORTANT: If you're using Github Desktop to push, you'll probably still need to send a PR in Github.com.
 
-<!--
-Run "pull" hourly to safely pull updates to the modelearth repos residing in your webroot
 
-When making any change, run "push" to send a PR. 
-"push" updates the webroot, submodules and forks. It does a "pull" automatically first.
+## Using Claude Code CLI (so so)
 
-## Using Claude Code CLI (not consistent due to root confusion)
 
-	push
-
-If you find "push" is asking for multiple approvals, Claude may not have read the claude.md instructions.
 For the first usage, include extra guidance:
 
 	push using claude.md with git.sh  
--->
+
+
+If you find "push" is asking for multiple approvals, Claude may not have read the claude.md instructions.
+
+When Claude has digested claude.md, "push" uses the git.sh file to update the webroot, submodules and forks. 
+
+"push" also does a "pull" automatically first.  (Same as ./git.sh push above.)
+
+	push
 
 Additional deployment commands:
 
 	push [folder name]  # Deploy a specific submodule or fork
 	push submodules  # Deploy changes in all submodules
 	push forks  # Deploy the extra forks added
+
+"push" sends a Pull Request (PR) unless you include "nopr" 
+
+
+
+
 
 
 ## Manual submodule refresh
