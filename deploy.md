@@ -7,32 +7,27 @@ Append "nopr" or "No PR" if you are not yet ready to send a Pull Request.
 
 Run your git.sh commands from a separate terminal. (Otherwise Code CLIs tend to use their own "push" interpretations.)
 
-Start a secure virtual session in your local webroot.
+Start a secure virtual session in your local webroot and give the git.sh files permission.  
+You can run ./git.sh from the root of your webroot.  (It resides in the team submodule to share among sites.)
 
 	python3 -m venv env
 	source env/bin/activate
 	chmod +x git.sh
 	chmod +x team/git.sh
 
-Navigate to the team directory and run git.sh commands. Your "push" with git.sh will automatically run a "pull" first.  
-You can watch the webroot in Github Desktop to see if updates are deployed.
+You can watch your webroot's file status change in Github Desktop to confirm updates are deployed.
 
-	cd team
-	./git.sh push           # Push all repositories with changes
-	./git.sh push all       # Same as above
+	./git.sh push           # Push all repositories with changes (auto-pulls first)
 	./git.sh pull           # Pull all repositories (webroot + submodules + extra repos)
 	./git.sh push [name]    # Push specific repository (webroot, submodule, or extra repo)
 	./git.sh pull [name]    # Pull specific repository
 
-### Common git.sh commands:
+You probably won't need these since cmds above resolve detached heads for submodules that differ from their parent repos.
 
-	./git.sh push                    # Push all repos with changes (auto-pulls first)
-	./git.sh push webroot           # Push webroot only
-	./git.sh push localsite         # Push specific submodule
-	./git.sh push submodules        # Push all submodules with changes
-	./git.sh pull                   # Pull all repos (webroot + submodules + extra repos)
 	./git.sh fix                    # Fix detached HEAD states
 	./git.sh remotes                # Update remotes for current GitHub user
+
+"push" also sends a Pull Request (PR) unless you include "nopr" 
 
 ### Wait to submit Pull Request:
 - Add `nopr` to skip PR creation: `./git.sh push nopr`
@@ -65,7 +60,7 @@ Then submit a PR through the Github.com website. (The "push" with Claude or git.
 IMPORTANT: If you're using Github Desktop to push, you'll probably still need to send a PR in Github.com.
 
 
-## Using Claude Code CLI (so so)
+## Using Claude Code CLI with git.sh (so so)
 
 
 For the first usage, include extra guidance:
@@ -73,11 +68,8 @@ For the first usage, include extra guidance:
 	push using claude.md with git.sh  
 
 
-If you find "push" is asking for multiple approvals, Claude may not have read the claude.md instructions.
-
-When Claude has digested claude.md, "push" uses the git.sh file to update the webroot, submodules and forks. 
-
-"push" also does a "pull" automatically first.  (Same as ./git.sh push above.)
+If you find "push" is asking for multiple approvals, Claude may not be following its CLAUDE.md instructions.
+When CLAUDE.md is followed, "push" uses the git.sh file to first pull, then update the webroot, submodules and forks.
 
 	push
 
@@ -87,11 +79,7 @@ Additional deployment commands:
 	push submodules  # Deploy changes in all submodules
 	push forks  # Deploy the extra forks added
 
-"push" sends a Pull Request (PR) unless you include "nopr" 
-
-
-
-
+"push" also sends a Pull Request (PR) unless you include "nopr" 
 
 
 ## Manual submodule refresh
