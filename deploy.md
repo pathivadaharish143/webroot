@@ -62,13 +62,14 @@ IMPORTANT: If you're using Github Desktop to push, you'll probably still need to
 
 ## Using Claude Code CLI with git.sh (so so)
 
+We don't use Claude with git.sh frequently because Claude doesn't always find the webroot smoothly, and sometimes starts following its own Github steps - which can require numerous approvals.
 
 For the first usage, include extra guidance:
 
 	push using claude.md with git.sh  
 
 
-If you find "push" is asking for multiple approvals, Claude may not be following its CLAUDE.md instructions.
+If you find "push" is asking for multiple approvals, Claude isn't following its CLAUDE.md instructions.
 When CLAUDE.md is followed, "push" uses the git.sh file to first pull, then update the webroot, submodules and forks.
 
 	push
