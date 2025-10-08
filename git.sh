@@ -3,7 +3,7 @@
 # Simple passthrough script to team/git.sh
 # Usage: ./git.sh [any arguments]
 
-# Ensure we're in the webroot directory
+# Run here (in webroot) regardless of where called from
 cd "$(dirname "$0")"
 
 # Check if team/git.sh exists
@@ -13,6 +13,5 @@ if [ ! -f "team/git.sh" ]; then
     exit 1
 fi
 
-# Change to team directory and run git.sh from there
-cd team
-exec ./git.sh "$@"
+# Run team/git.sh from webroot directory (don't cd into team)
+exec ./team/git.sh "$@"
