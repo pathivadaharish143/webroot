@@ -50,7 +50,7 @@ To recover previously committed work that was overwritten locally:
 ### Supported repositories:
 - **Webroot**: webroot
 - **Submodules**: Automatically detected from .gitmodules file
-- **Extra Repos**: Automatically detected from extra-repos.txt file
+- **Extra Repos**: Automatically detected from .siterepos file
 
 ## Using Github Desktop
 
